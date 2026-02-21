@@ -1,4 +1,4 @@
-﻿@model Mission06_YourLastName.Models.Movie
+@model Mission06_YourLastName.Models.Movie
 
 @{
     ViewData["Title"] = "Delete";
@@ -11,11 +11,9 @@
     <h4>Movie</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
+        <dt class = "col-sm-2">Category</dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category)
+            @(Model.Category?.CategoryName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -45,7 +43,13 @@
             @Html.DisplayNameFor(model => model.Edited)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Edited)
+            @(Model.Edited ? "Yes" : "No")
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CopiedToPlex)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.CopiedToPlex ? "Yes" : "No")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.LentTo)
@@ -61,9 +65,9 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="mt-3">
         <input type="hidden" asp-for="MovieId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
     </form>
 </div>

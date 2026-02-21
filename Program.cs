@@ -3,11 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Ensure App_Data exists for SQLite database (place downloaded MovieCollection.sqlite here)
+var dataPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data");
+if (!Directory.Exists(dataPath))
+    Directory.CreateDirectory(dataPath);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MovieContext>(options =>
-    options.UseSqlite("Data Source=MovieCollection.sqlite"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("MovieConnection")));
 
 var app = builder.Build();
 

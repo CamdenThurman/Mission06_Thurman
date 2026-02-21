@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +9,10 @@ using Mission06_YourLastName.Models;
 
 namespace Mission06_Thurman.Controllers
 {
+    /// <summary>
+    /// Handles Joel's movie collection: list, add, edit, delete, and details.
+    /// Required fields for new/edit: Title, Year, Edited, CopiedToPlex. Year must be 1888 or later.
+    /// </summary>
     public class MovieController : Controller
     {
         private readonly MovieContext _context;
@@ -21,7 +25,7 @@ namespace Mission06_Thurman.Controllers
         // GET: Movie
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Movies.ToListAsync());
+            return View(await _context.Movies.Include(m => m.Category).ToListAsync());
         }
 
         // GET: Movie/Details/5
@@ -33,6 +37,7 @@ namespace Mission06_Thurman.Controllers
             }
 
             var movie = await _context.Movies
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             if (movie == null)
             {
@@ -45,15 +50,14 @@ namespace Mission06_Thurman.Controllers
         // GET: Movie/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(c => c.CategoryName), "CategoryId", "CategoryName");
             return View();
         }
 
         // POST: Movie/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MovieId,Category,Title,Year,Director,Rating,Edited,LentTo,Notes")] Movie movie)
+        public async Task<IActionResult> Create([Bind("MovieId,CategoryId,Title,Year,Director,Rating,Edited,CopiedToPlex,LentTo,Notes")] Movie movie)
         {
             if (ModelState.IsValid)
             {
@@ -61,6 +65,7 @@ namespace Mission06_Thurman.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(c => c.CategoryName), "CategoryId", "CategoryName", movie.CategoryId);
             return View(movie);
         }
 
@@ -72,20 +77,19 @@ namespace Mission06_Thurman.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Movies.Include(m => m.Category).FirstOrDefaultAsync(m => m.MovieId == id);
             if (movie == null)
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(c => c.CategoryName), "CategoryId", "CategoryName", movie.CategoryId);
             return View(movie);
         }
 
         // POST: Movie/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MovieId,Category,Title,Year,Director,Rating,Edited,LentTo,Notes")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("MovieId,CategoryId,Title,Year,Director,Rating,Edited,CopiedToPlex,LentTo,Notes")] Movie movie)
         {
             if (id != movie.MovieId)
             {
@@ -112,6 +116,7 @@ namespace Mission06_Thurman.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(c => c.CategoryName), "CategoryId", "CategoryName", movie.CategoryId);
             return View(movie);
         }
 
@@ -124,6 +129,7 @@ namespace Mission06_Thurman.Controllers
             }
 
             var movie = await _context.Movies
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             if (movie == null)
             {

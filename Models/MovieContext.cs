@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace Mission06_YourLastName.Models
@@ -11,5 +11,14 @@ namespace Mission06_YourLastName.Models
         }
 
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Movie>()
+                .HasOne(m => m.Category)
+                .WithMany(c => c.Movies)
+                .HasForeignKey(m => m.CategoryId);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Mission06_YourLastName.Models.Movie
+@model Mission06_YourLastName.Models.Movie
 
 @{
     ViewData["Title"] = "Create Movie";
@@ -13,9 +13,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="form-group mb-3">
-                <label asp-for="Category" class="form-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
+                <label asp-for="CategoryId" class="form-label">Category</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                    <option value="">-- Select Category --</option>
+                </select>
             </div>
 
             <div class="form-group mb-3">
@@ -50,11 +51,22 @@
 
             <div class="form-group mb-3">
                 <label class="form-label">Edited</label>
-                <select asp-for="Edited" class="form-control">
+                <select asp-for="Edited" class="form-control" required>
                     <option value="">Select Option</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                 </select>
+                <span asp-validation-for="Edited" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Copied to Plex</label>
+                <select asp-for="CopiedToPlex" class="form-control" required>
+                    <option value="">Select Option</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="CopiedToPlex" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
